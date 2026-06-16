@@ -79,7 +79,7 @@ export type BusinessSetupFormType = z.infer<typeof businessSetupSchema>;
 
 export const menuItemSchema = z.object({
   name: z.string().trim().min(2, "Product name must be at least 2 characters").max(80, "Product name must be at most 80 characters").regex(/[a-zA-Z]/, "Product name must contain at least one letter"),
-  category: z.string().trim().min(2, "Category must be at least 2 characters").max(40, "Category must be at most 40 characters").regex(/^[a-zA-Z0-9\s&,.'-]+$/, "Category contains invalid characters").regex(/[a-zA-Z0-9]/, "Category must contain at least one letter or number"),
+  category: z.string().trim().min(2, "Category must be at least 2 characters").max(40, "Category must be at most 40 characters").regex(/^[a-zA-Z0-9\s&,.'-]+$/, "Category contains invalid characters").regex(/[a-zA-Z]/, "Category must contain at least one letter"),
   description: z.string().max(500, "Description must be at most 500 characters").optional(),
   quantity: z.preprocess((val) => {
     if (val === "" || val === null || val === undefined) return undefined;
