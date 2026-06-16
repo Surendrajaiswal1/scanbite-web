@@ -40,7 +40,8 @@ export const CheckoutPage = () => {
     switch (field) {
       case 'name': {
         const nameRegex = /^[A-Za-z\s.]{3,50}$/;
-        if (value && value.trim() !== '' && nameRegex.test(value.trim())) {
+        const hasLetter = /[A-Za-z]/.test(value);
+        if (value && value.trim() !== '' && nameRegex.test(value.trim()) && hasLetter) {
           delete newErrors.name;
         }
         break;
@@ -74,10 +75,11 @@ export const CheckoutPage = () => {
     const newErrors: { name?: string, phone?: string, email?: string, notes?: string } = {};
 
     const nameRegex = /^[A-Za-z\s.]{3,50}$/;
+    const hasLetter = /[A-Za-z]/.test(formData.name || "");
     if (!formData.name || formData.name.trim() === '') {
       newErrors.name = "Full name is required";
-    } else if (!nameRegex.test(formData.name.trim())) {
-      newErrors.name = "Name must contain only letters (3-50 characters)";
+    } else if (!nameRegex.test(formData.name.trim()) || !hasLetter) {
+      newErrors.name = "Name must contain at least one letter (3-50 chars)";
     }
 
     if (!formData.phone || !isValidPhoneNumber(formData.phone)) {
