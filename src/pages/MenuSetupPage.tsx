@@ -4,6 +4,7 @@ import { apiClient } from "../services/api";
 import { MenuItemForm } from "../components/MenuItemForm";
 import type { MenuItem } from "../components/MenuItemList";
 import { useNavigate } from "react-router-dom";
+import { CsvUpload } from "../components/CsvUpload";
 
 export const MenuSetupPage = () => {
   const { user } = useAuthStore();
@@ -11,6 +12,7 @@ export const MenuSetupPage = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
 
   const fetchItems = async () => {
     const response = await apiClient.getMenuItems();
@@ -76,13 +78,22 @@ export const MenuSetupPage = () => {
             </div>
           )}
 
-          <button 
-            onClick={() => setIsModalOpen(true)}
-            className="w-full border-2 border-dashed border-slate-300 hover:border-[var(--accent)] hover:bg-indigo-50 text-slate-600 hover:text-[var(--accent)] font-semibold py-4 rounded-xl transition-colors flex justify-center items-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
-            Add an Item
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="flex-1 border-2 border-dashed border-slate-300 hover:border-[var(--accent)] hover:bg-indigo-50 text-slate-600 hover:text-[var(--accent)] font-semibold py-4 rounded-xl transition-colors flex justify-center items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              Add an Item
+            </button>
+            <button 
+              onClick={() => setIsCsvModalOpen(true)}
+              className="flex-1 border-2 border-dashed border-slate-300 hover:border-[var(--accent)] hover:bg-indigo-50 text-slate-600 hover:text-[var(--accent)] font-semibold py-4 rounded-xl transition-colors flex justify-center items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg>
+              Upload CSV
+            </button>
+          </div>
         </div>
 
         <button
@@ -107,6 +118,24 @@ export const MenuSetupPage = () => {
             }} 
             onClose={() => setIsModalOpen(false)} 
           />
+        </>
+      )}
+
+      {isCsvModalOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsCsvModalOpen(false)}
+          ></div>
+          <div className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white rounded-2xl shadow-xl overflow-hidden p-6 animate-[fadeIn_0.2s_ease-out]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg">Upload Bulk Items</h3>
+              <button onClick={() => setIsCsvModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+              </button>
+            </div>
+            <CsvUpload onSuccess={() => { fetchItems(); setIsCsvModalOpen(false); }} />
+          </div>
         </>
       )}
     </div>
