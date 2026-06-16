@@ -215,32 +215,34 @@ export const PaymentsPage = () => {
                     <p className="text-sm font-semibold truncate">{tx.order_number || `Order #${tx.id}`}</p>
                     <p className="text-xs text-slate-500 truncate">{method} · {formatTime(tx.created_at)}</p>
                   </div>
-                  <div className="text-right">
-                    <p className={`text-sm font-bold tabular-nums ${displayStatus === 'failed' ? 'text-red-500' : displayStatus === 'refunded' ? 'text-slate-500 line-through' : ''
-                      }`}>
-                      {formatCurrency(amount)}
-                    </p>
-                    {displayStatus === 'success' && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mt-1">Paid</span>
+                  <div className="flex items-center gap-4">
+                    {displayStatus === 'pending' && tx.payment_method === "Cash on Counter" && (
+                      <button 
+                        onClick={() => handleMarkPaid(tx.id)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors text-xs font-bold active:scale-95 shrink-0"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Mark Paid
+                      </button>
                     )}
-                    {displayStatus === 'pending' && (
-                      <div className="flex flex-col items-end gap-1 mt-0.5">
-                        {tx.payment_method === "Cash on Counter" && (
-                          <button 
-                            onClick={() => handleMarkPaid(tx.id)}
-                            className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 underline uppercase tracking-wider"
-                          >
-                            Mark Paid
-                          </button>
-                        )}
-                      </div>
-                    )}
-                    {displayStatus === 'failed' && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 mt-1">Failed</span>
-                    )}
-                    {displayStatus === 'refunded' && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mt-1">Refunded</span>
-                    )}
+                    <div className="text-right shrink-0">
+                      <p className={`text-sm font-bold tabular-nums ${displayStatus === 'failed' ? 'text-red-500' : displayStatus === 'refunded' ? 'text-slate-500 line-through' : ''
+                        }`}>
+                        {formatCurrency(amount)}
+                      </p>
+                      {displayStatus === 'success' && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mt-1 block">Paid</span>
+                      )}
+                      {displayStatus === 'pending' && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 mt-1 block">Pending</span>
+                      )}
+                      {displayStatus === 'failed' && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 mt-1 block">Failed</span>
+                      )}
+                      {displayStatus === 'refunded' && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mt-1 block">Refunded</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

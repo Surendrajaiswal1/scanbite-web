@@ -57,7 +57,7 @@ export type ForgotPasswordFormType = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordFormType = z.infer<typeof resetPasswordSchema>;
 
 export const businessSetupSchema = z.object({
-  shop_name: z.string().min(3, "Shop name must be at least 3 characters").max(50, "Shop name must be at most 50 characters"),
+  shop_name: z.string().trim().min(3, "Shop name must be at least 3 characters").max(50, "Shop name must be at most 50 characters").regex(/[a-zA-Z]/, "Shop name must contain at least one letter"),
   phone_number: z.string().refine((val) => val && isValidPhoneNumber(val), "Enter a valid phone number"),
   address: z.string().min(5, "Address must be at least 5 characters").max(200, "Address must be at most 200 characters"),
   upi_id: z.string().regex(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/, "Enter a valid UPI ID (e.g., name@bank)").max(100, "UPI ID is too long"),
@@ -78,8 +78,8 @@ export const businessSetupSchema = z.object({
 export type BusinessSetupFormType = z.infer<typeof businessSetupSchema>;
 
 export const menuItemSchema = z.object({
-  name: z.string().min(2, "Product name must be at least 2 characters").max(80, "Product name must be at most 80 characters"),
-  category: z.string().min(2, "Category must be at least 2 characters").max(40, "Category must be at most 40 characters"),
+  name: z.string().trim().min(2, "Product name must be at least 2 characters").max(80, "Product name must be at most 80 characters").regex(/[a-zA-Z]/, "Product name must contain at least one letter"),
+  category: z.string().trim().min(2, "Category must be at least 2 characters").max(40, "Category must be at most 40 characters").regex(/^[a-zA-Z0-9\s&,.'-]+$/, "Category contains invalid characters"),
   description: z.string().max(500, "Description must be at most 500 characters").optional(),
   quantity: z.preprocess((val) => {
     if (val === "" || val === null || val === undefined) return undefined;
@@ -105,7 +105,7 @@ export type MenuItemFormType = z.infer<typeof menuItemSchema>;
 
 export const profileDetailsSchema = z.object({
   full_name: z.string().trim().min(3, "Full name must be at least 3 characters").regex(/^[A-Za-z]+(?: [A-Za-z]+)*$/, "Full name must contain only letters"),
-  shop_name: z.string().min(3, "Shop name must be at least 3 characters").max(50, "Shop name must be at most 50 characters"),
+  shop_name: z.string().trim().min(3, "Shop name must be at least 3 characters").max(50, "Shop name must be at most 50 characters").regex(/[a-zA-Z]/, "Shop name must contain at least one letter"),
   phone_number: z.string().refine((val) => val && isValidPhoneNumber(val), "Enter a valid phone number"),
   address: z.string().min(5, "Address must be at least 5 characters").max(200, "Address must be at most 200 characters"),
 });
