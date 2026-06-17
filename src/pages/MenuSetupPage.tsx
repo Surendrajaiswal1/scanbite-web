@@ -13,6 +13,7 @@ export const MenuSetupPage = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
   const fetchItems = async () => {
     const response = await apiClient.getMenuItems();
@@ -65,6 +66,30 @@ export const MenuSetupPage = () => {
                       <p className="font-semibold text-sm truncate text-slate-900">{item.name}</p>
                       <p className="text-xs text-slate-500">{item.price} {item.currency || 'INR'}</p>
                     </div>
+                    <div className="flex gap-1">
+                      <button 
+                        onClick={() => {
+                          setEditingItem(item);
+                          setIsModalOpen(true);
+                        }}
+                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        title="Edit Item"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          if (confirm("Are you sure you want to delete this item?")) {
+                            const res = await apiClient.deleteMenuItem(item.id);
+                            if (res.success) fetchItems();
+                          }
+                        }}
+                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete Item"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -109,14 +134,22 @@ export const MenuSetupPage = () => {
         <>
           <div 
             className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => {
+              setIsModalOpen(false);
+              setEditingItem(null);
+            }}
           ></div>
           <MenuItemForm 
+            itemToEdit={editingItem}
             onSuccess={() => {
               fetchItems();
               setIsModalOpen(false);
+              setEditingItem(null);
             }} 
-            onClose={() => setIsModalOpen(false)} 
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditingItem(null);
+            }} 
           />
         </>
       )}
